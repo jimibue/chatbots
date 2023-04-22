@@ -1,13 +1,21 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 // import Link from "next/link";
-import { SignIn, SignInButton, SignOutButton, SignUp, useUser } from "@clerk/nextjs";
+import {
+  SignIn,
+  SignInButton,
+  SignOutButton,
+  SignUp,
+  useUser,
+} from "@clerk/nextjs";
 
-// import { api } from "~/utils/api";
+import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
-   const user = useUser()
+  const user = useUser();
+
+  const { data } = api.posts.getAll.useQuery();
   return (
     <>
       <Head>
@@ -16,18 +24,23 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
-      <h1> Sign up</h1>
-      <SignUp path="/sign-up" routing="path" signInUrl="/sign-in" />
-      <h1> Sign in 1</h1>
-      <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
-      <h1> Sign in 2</h1>
-      <hr />
-      <div>
-        {!user.isSignedIn &&  <SignInButton />}
-        {user.isSignedIn &&  <SignOutButton />}
-      </div>
-      
-
+        <h1> Sign up</h1>
+        <SignUp path="/sign-up" routing="path" signInUrl="/sign-in" />
+        <h1> Sign in 1</h1>
+        <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
+        <h1> Sign in 2</h1>
+        <hr />
+        <div>
+          {!user.isSignedIn && <SignInButton />}
+          {user.isSignedIn && <SignOutButton />}
+        </div>
+        <div>
+          <p>Data:</p>
+          {JSON.stringify(data)}
+          {data?.map((p) => (
+            <p key={p.id}>{p.content}</p>
+          ))}
+        </div>
       </main>
     </>
   );
